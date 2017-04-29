@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Created by tcheng on 4/25/17.
  */
@@ -15,10 +17,10 @@ public class SortingTest {
 
     @Test
     public void sortRunner() {
-        List<List<Integer>> randomIntArrays = IntStream.range(0, 5)
+        List<List<Integer>> randomIntArrays = IntStream.range(0, 3)
                 .boxed()
                 .map(num -> {
-                    List<Integer> integerList = IntStream.rangeClosed(1, 10)
+                    List<Integer> integerList = IntStream.rangeClosed(1, 5)
                             .boxed()
                             .collect(Collectors.toList());
                     Collections.shuffle(integerList);
@@ -29,13 +31,19 @@ public class SortingTest {
         randomIntArrays
                 .stream()
                 .map(l -> l.toArray(new Integer[l.size()]))
-                .forEach(this::bubbleSort);
+                .forEach(array -> {
+                    Integer[] toSort = array.clone();
+                    Arrays.sort(array);
+                    assertThat(bubbleSort(toSort))
+                            .containsExactly(array);
+                });
     }
 
-    private void bubbleSort(Integer[] array) {
+    private Integer[] bubbleSort(Integer[] array) {
         int tmp;
-        System.out.println("=== Beginning ===");
+        System.out.println("=== Bubble Sort Beginning ===");
         System.out.println(Arrays.toString(array));
+
         for (int i = 0; i < array.length - 1; i++) {
             boolean swapped = false;
             for (int j = 0; j < array.length - i - 1; j++) {
@@ -52,5 +60,7 @@ public class SortingTest {
             }
         }
         System.out.println("=== End ===");
+
+        return array;
     }
 }
